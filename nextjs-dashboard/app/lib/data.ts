@@ -42,7 +42,16 @@ export async function fetchLatestInvoices() {
       ORDER BY invoices.date DESC
       LIMIT 5`;
 
-    const latestInvoices = data.map((invoice) => ({
+    interface Invoice {
+      id: number;
+      customer_id: number;
+      amount: number;
+      status: string;
+      date: string;
+    }
+
+
+    const latestInvoices = data.map((invoice: Invoice) => ({
       ...invoice,
       amount: formatCurrency(invoice.amount),
     }));
