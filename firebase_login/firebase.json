@@ -1,0 +1,19 @@
+{
+  "emulators": {
+    "dataconnect": {
+      "dataDir": "dataconnect/.dataconnect/pgliteData"
+    }
+  },
+  "dataconnect": {
+    "source": "dataconnect",
+    "sqlInstance": "fir-login-c0b70:us-central1:firebaselogin-fdc",
+    "database": "postgres",
+    "user": "kie_sato",
+    "passwordSecret": "projects/fir-login-c0b70/secrets/firebase_db_password"
+  },
+  "hosting": {
+    "public": "public",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "frameworksBackend": true
+  }
+}

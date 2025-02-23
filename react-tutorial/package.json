@@ -1,6 +1,11 @@
 {
+  "homepage": "https://gi-ra-ffe.github.io/nextjs/react-tutorial",
   "scripts": {
-    "dev": "next dev"
+    "dev": "next dev",
+    "rm": "rm -rf docs",
+    "mv": "mv build docs",
+    "git": "git add . && git commit && git push origin master",
+    "deploy": "npm run rm && npm run build && npm run mv && npm run git"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.0.7",
