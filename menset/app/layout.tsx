@@ -13,7 +13,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Menset | 面接時間調整",
+  title: {
+    template: '%s | Menset 面接時間調整Webアプリ',
+    default: 'Menset | 面接時間調整',
+  },
   description: "面接時間を調整します。",
 };
 
