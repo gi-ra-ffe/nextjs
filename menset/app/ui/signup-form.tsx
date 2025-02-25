@@ -7,7 +7,7 @@ export function SignupForm() {
     const [state, action, pending] = useActionState(signup, undefined)
 
     return (
-        <form action={signup}>
+        <form action={action}>
             <div className='mb-[8px]'>
                 <label htmlFor="name">名前</label>
                 <input id="name" name="name" placeholder="面接 太郎"

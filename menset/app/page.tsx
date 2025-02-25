@@ -8,7 +8,7 @@ export default function Home(){
       <p className="mb-[40px]">面接日程調整アプリです</p>
       <div className="flex">
         <Button><Link href={'./register'}>登録する</Link></Button>
-        <Button className="ml-[8px]">ログインする</Button>
+        <Button className="ml-[8px]"><Link href={'./login'}>ログインする</Link></Button>
       </div>
     </main>
   )

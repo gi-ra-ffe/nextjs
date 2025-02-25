@@ -11,9 +11,6 @@ export const SignupFormSchema = z.object({
         .min(8, { message: '8文字以上入力してください' })
         .regex(/[a-zA-Z]/, { message: '1文字以上の英字を入れてください' })
         .regex(/[0-9]/, { message: '1文字以上の数字を入れてください' })
-        .regex(/[^a-zA-Z0-9]/, {
-            message: '1文字以上の大文字を入れてください.',
-        })
         .trim(),
 })
 
