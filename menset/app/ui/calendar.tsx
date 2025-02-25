@@ -17,8 +17,8 @@ const pickItems = [
 const selectedItems = []
 
 export default function Calendar() {
-    const startDay = new Date().toISOString().slice(0, 10);
-    const endDay = new Date(Date.now() + 21 * 86400000).toISOString().slice(0, 10);
+    const startDay = new Date(Date.now() + 3 * 86400000).toISOString().slice(0, 10); // 3日後〜
+    const endDay = new Date(Date.now() + 21 * 86400000).toISOString().slice(0, 10); // 〜21日後
     
     const [currentIndex, setCurrentIndex] = useState(0);
     const handleEventReceive = () => {
