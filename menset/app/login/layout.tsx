@@ -7,10 +7,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }) {
     return (
-        <html lang="ja">
-            <body>
-                {children} {/* これがないとページが表示されない */}
-            </body>
-        </html>
+        <>
+            {children} {/* これがないとページが表示されない */}
+        </>
     );
 }
