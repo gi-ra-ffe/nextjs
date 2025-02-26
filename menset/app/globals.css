@@ -21,3 +21,8 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   padding: 80px;
 }
+
+.bg-keycolor {
+  color: #fff;
+  background: var(--keycolor);
+}
