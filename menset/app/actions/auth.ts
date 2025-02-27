@@ -2,12 +2,15 @@
 import { SignupFormSchema, FormState } from '@/app/lib/definitions'
 import { firebaseAuth } from '@/lib/firebase';
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { collection, doc, setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { redirect } from "next/navigation";
 
 export async function signup(prevState: any, formData: FormData) {
     // フォームの検証
     const validatedFields = SignupFormSchema.safeParse({
         name: formData.get('name'),
+        type: formData.get('type'),
         email: formData.get('email'),
         password: formData.get('password'),
     })
@@ -19,29 +22,34 @@ export async function signup(prevState: any, formData: FormData) {
     }
 
     // データベースに挿入する準備
-    const { name, email, password } = validatedFields.data
+    const { name, type, email, password } = validatedFields.data;
+    if (!type) {
+        console.error("エラー: type が undefined");
+        return { errors: { type: ["アカウントの種類を選択してください"] } };
+    }
 
     try {
         const userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
-        const firebaseUser = userCredential.user;
+        const user = userCredential.user;
 
-        // // 🔥 **ユーザーをデータベースに挿入**
-        // const data = await db
-        //     .insert(users)
-        //     .values({
-        //         id: firebaseUser.uid,  // FirebaseのIDをDBに保存
-        //         name,
-        //         email,
-        //     })
-        //     .returning({ id: users.id });
-        // console.log("Firebase登録成功:", userCredential.user);
-        // return { success: true, userId: data[0].id };
+        // 🔥 Firestore にユーザー情報を保存
+        await setDoc(doc(collection(db, "users"), user.uid), {
+            name,
+            email,
+            type,
+            uid: user.uid,
+            createdAt: new Date(),
+        });
+
+        return { success: true, redirectUrl: "/calendar" };
+
     } catch (error) {
-        console.error("Firebase登録エラー:", error); 
+        console.error("Firebase登録エラー:", error);
         return { errors: { email: ["このメールアドレスはすでに登録されています"] } };
     }
 }
 export async function login(prevState: any, formData: FormData) {
+
     // フォームの検証
     const validatedFields = SignupFormSchema.safeParse({
         email: formData.get('email'),
@@ -55,25 +63,15 @@ export async function login(prevState: any, formData: FormData) {
     }
 
     // データベースに挿入する準備
-    const { name, email, password } = validatedFields.data
+    const { email, password } = validatedFields.data
 
     try {
         const userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
         const firebaseUser = userCredential.user;
 
-        // // 🔥 **ユーザーをデータベースに挿入**
-        // const data = await db
-        //     .insert(users)
-        //     .values({
-        //         id: firebaseUser.uid,  // FirebaseのIDをDBに保存
-        //         name,
-        //         email,
-        //     })
-        //     .returning({ id: users.id });
-        // console.log("Firebase登録成功:", userCredential.user);
-        return { success: true, userId: data[0].id };
+        return { success: true, userId: firebaseUser.uid };
     } catch (error) {
-        console.error("ログインエラー:", error); 
+        console.error("ログインエラー:", error);
 
         // return { errors: { email: ["このメールアドレスはすでに登録されています"] } };
     }
