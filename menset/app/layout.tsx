@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-
+import SessionProviderWrap from "@/app/ui/SessionProviderWrap";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -22,16 +22,20 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
+  // session,
 }: Readonly<{
   children: React.ReactNode;
+  // session: any; 
 }>) {
   return (
-    <html lang="ja">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
-    </html>
+    <SessionProviderWrap>
+      <html lang="ja">
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          {children}
+        </body>
+      </html>
+    </SessionProviderWrap>
   );
 }
