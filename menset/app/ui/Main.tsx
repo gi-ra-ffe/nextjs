@@ -13,9 +13,12 @@ export default function Main() {
         if (status === "authenticated") {
             router.push("/calendar"); // ✅ ログイン済みならカレンダーへリダイレクト
         }
-    }, [status, router]);
+    }, [status, session, router]);
 
     if (status === "loading") return <p>Loading...</p>;
+
+    console.log("🔍 session:", session);
+    console.log("🔍 status:", status);
 
     return (
         <main>

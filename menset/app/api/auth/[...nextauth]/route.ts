@@ -1,16 +1,10 @@
 import NextAuth from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { FirestoreAdapter } from "@next-auth/firebase-adapter";
-import { db, firebaseAuth } from "@/lib/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { firebaseAuth } from "@/lib/firebase";
 
-export const authOptions = {
+const handler = NextAuth({
     providers: [
-        GoogleProvider({
-            clientId: process.env.GOOGLE_CLIENT_ID!,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-        }),
         CredentialsProvider({
             name: "Email & Password",
             credentials: {
@@ -18,8 +12,12 @@ export const authOptions = {
                 password: { label: "Password", type: "password" },
             },
             async authorize(credentials) {
+                console.log("🚀 `authorize` が実行された！", credentials);
+                if (!credentials?.email || !credentials?.password) {
+                    console.error("🚨 認証エラー: credentials が不足しています");
+                    return null;
+                }
                 try {
-                    // Firebase のログイン処理
                     const userCredential = await signInWithEmailAndPassword(
                         firebaseAuth,
                         credentials.email,
@@ -27,18 +25,29 @@ export const authOptions = {
                     );
                     return { id: userCredential.user.uid, email: credentials.email };
                 } catch (error) {
-                    console.error("ログインエラー:", error);
+                    console.error("🚨 認証エラー:", error);
                     return null;
                 }
             },
         }),
     ],
-    adapter: FirestoreAdapter(db), // Firestore にユーザー情報を保存！
-    secret: process.env.NEXTAUTH_SECRET,
-    pages: {
-        signIn: "/login", // カスタムログインページ
+    session: {
+        strategy: "jwt",
     },
-};
+    callbacks: {
+        async jwt({ token, user }) {
+            if (user) {
+                token.id = user.id; 
+                token.email = user.email;
+            }
+            return token;
+        },
+        async session({ session, token }) {
+            session.user = { id: token.id, email: token.email }; // ✅ session に id を追加
+            return session;
+        },
+    },
+    secret: process.env.NEXTAUTH_SECRET,
+});
 
-const handler = NextAuth(authOptions);
-export { handler as GET, handler as POST }; // ✅ APIルートを作成
+export { handler as GET, handler as POST };

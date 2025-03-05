@@ -1,35 +1,27 @@
 'use client'
 
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth"
 import { Button } from '@/app/ui/button';
 import { useState } from 'react';
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-
-// Firebaseの初期化を行うためfirebaseAppをインポート
-import { app } from '@/lib/firebase';
+import { signIn } from "next-auth/react"; 
 
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const router = useRouter();
 
     // ユーザーがログインボタンを押したときにdoLogin関数が実行される
-    const doLogin = () => {
-        const auth = getAuth(app);
-        
-        // Firebaseで用意されているメールアドレスとパスワードでログインするための関数
-        signInWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                const user = userCredential.user;
-                // ログインができたかどうかをわかりやすくするためのアラート
-                // alert('ログインOK!');
-                console.log(user);
-                router.push("/calendar");
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+    const doLogin = async () => {
+        const result = await signIn("credentials", {
+            email,
+            password,
+            redirect: true,
+            callbackUrl: "/calendar"
+        });
+
+        if (result?.error) {
+            console.error("❌ ログイン失敗:", result.error);
+        } else {
+        }
     }
 
     return (
