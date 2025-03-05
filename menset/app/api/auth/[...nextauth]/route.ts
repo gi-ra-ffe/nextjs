@@ -12,7 +12,6 @@ const handler = NextAuth({
                 password: { label: "Password", type: "password" },
             },
             async authorize(credentials) {
-                console.log("🚀 `authorize` が実行された！", credentials);
                 if (!credentials?.email || !credentials?.password) {
                     console.error("🚨 認証エラー: credentials が不足しています");
                     return null;
@@ -43,7 +42,7 @@ const handler = NextAuth({
             return token;
         },
         async session({ session, token }) {
-            session.user = { id: token.id, email: token.email }; // ✅ session に id を追加
+            session.user = { id: token.id, email: token.email };
             return session;
         },
     },
